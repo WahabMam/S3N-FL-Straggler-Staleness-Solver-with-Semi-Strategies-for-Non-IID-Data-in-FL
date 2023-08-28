@@ -1,6 +1,7 @@
 # SALF
 PyTorch implementation of Straggler-Aware Layer-Wise Low-Latency Federated Learning (submitted to ICASSP 2024)
-![image](https://github.com/langnatalie/SALF/assets/55830582/972e14e0-b09f-48dc-8f0d-e3bb3b782443)
+![download](https://github.com/langnatalie/SALF/assets/55830582/2ee6673f-f7ce-45de-b20d-5069a30ca056)
+
 
 ## Introduction
 In this work we propose _Straggler-Aware Layer-Wise Low-Latency Federated Learning (SALF)_, that leverages the optimization procedure of neural networks via backpropagation to update the global model in a _layer-wise_ fashion. This repository contains a basic PyTorch implementation of SALF. Please refer to our [paper-TODO](https://arxiv.org/abs/2208.10888) for more details.
