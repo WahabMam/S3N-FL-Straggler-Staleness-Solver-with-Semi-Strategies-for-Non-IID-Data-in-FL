@@ -1,23 +1,29 @@
 import math
 import os
+import random
+import time
+
+from matplotlib import pyplot as plt
+from scipy.interpolate import interp1d
 import torch
 import copy
 import numpy as np
 from torch import optim
 from statistics import mean
-from tensorboardX import SummaryWriter
 from torchvision import datasets, transforms
+
 
 def FedAvg(local_models, global_model):
     state_dict = global_model.state_dict()
     for key in state_dict.keys():
         local_weights_sum = torch.zeros_like(state_dict[key])
-
+        count_updating_users = 0
         for user_idx in range(0, len(local_models)):
             if key in local_models[user_idx]['model'].state_dict():
                 local_weights_sum += local_models[user_idx]['model'].state_dict()[key]
-
-        state_dict[key] = (local_weights_sum/len(local_models)).to(state_dict[key].dtype)
+                count_updating_users += 1
+        if count_updating_users != 0:
+            state_dict[key] = (local_weights_sum / len(local_models)).to(state_dict[key].dtype)
 
     global_model.load_state_dict(state_dict)
     return
@@ -65,19 +71,19 @@ def initializations(args):
     torch.manual_seed(args.seed)
     torch.cuda.manual_seed_all(args.seed)
     np.random.seed(args.seed)
+    random.seed(args.seed)
 
     #  documentation
     if not os.path.exists('checkpoints'):
         os.makedirs('checkpoints')
     if not os.path.exists('checkpoints/' + args.exp_name):
         os.makedirs('checkpoints/' + args.exp_name)
-    boardio = SummaryWriter(log_dir='checkpoints/' + args.exp_name)
     textio = IOStream('checkpoints/' + args.exp_name + '/run.log')
 
     best_val_acc = np.NINF
     path_best_model = 'checkpoints/' + args.exp_name + '/model.best.t7'
 
-    return boardio, textio, best_val_acc, path_best_model
+    return textio, best_val_acc, path_best_model
 
 
 def data(args):
@@ -137,7 +143,9 @@ def train_one_epoch(train_loader, model, optimizer,
 
         optimizer.zero_grad()
         loss.backward()
+        start = time.time()
         optimizer.step()
+        nat = (time.time() - start) / 60
 
         losses.append(loss.item())
 

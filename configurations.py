@@ -1,41 +1,54 @@
 import argparse
 
+def none_or_str(value):
+    if value == 'None':
+        return None
+    return value
+
+def float_or_str(value):
+    if type(value) == str:
+        return float(value)
+    return value
+
+def int_or_str(value):
+    if type(value) == str:
+        if value == 'None':
+            return None
+        return int(value)
+    return value
 
 def args_parser():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--exp_name', type=str, default='exp',
                         help="the name of the current experiment")
-    parser.add_argument('--stragglers', type=str, default='salf',
+    parser.add_argument('--stragglers', type=none_or_str, default='salf',
                         choices=['salf', 'drop', None],
                         help="whether the FL is stragglers aware")
-    parser.add_argument('--stragglers_percent', type=float, default=0.9,
+    parser.add_argument('--stragglers_percent', type=float_or_str, default=0.9,
                         help="the percent of percent out of the edge users")
-    parser.add_argument('--up_to_layer', type=int, default=1,
+    parser.add_argument('--up_to_layer', type=int_or_str, default=None,
                         help="if 'None' - choose randomly, else - update until (num_layers - up_to_layer)"
                              "example: up_to_layer=1 results with an update up to one before the first layer")
 
     parser.add_argument('--data', type=str, default='mnist',
                         choices=['mnist', 'cifar10'],
                         help="dataset to use (mnist or cifar)")
-    parser.add_argument('--num_samples', type=int, default=None,
-                        help="number of samples per user; if 'None' - uniformly distribute all data among all users)")
-
-    parser.add_argument('--model', type=str, default='mlp',
-                        choices=['mlp', 'cnn2'],
-                        help="model to use (cnn, mlp)")
+    parser.add_argument('--model', type=str, default='cnn2',
+                        choices=['mlp', 'cnn2', 'VGG11', 'VGG13', 'VGG16', 'VGG19'],
+                        help="model arcitecture to be used")
+    parser.add_argument('--lr', type=float, default=0.1,
+                        help="learning rate")
     parser.add_argument('--global_epochs', type=int, default=100,
                         help="number of global epochs")
-    parser.add_argument('--device', type=str, default='cuda:1',
+    parser.add_argument('--device', type=str, default='cuda:0',
                         choices=['cuda:0', 'cuda:1', 'cpu'],
                         help="device to use (gpu or cpu)")
 
+    parser.add_argument('--num_samples', type=int, default=None,
+                        help="number of samples per user; if 'None' - uniformly distribute all data among all users)")
     parser.add_argument('--num_users', type=int, default=30,
                         help="number of users participating in the federated learning")
-
-    parser.add_argument('--lr', type=float, default=0.1,
-                        help="learning rate")
-
     parser.add_argument('--train_batch_size', type=int, default=16,
                         help="trainset batch size")
     parser.add_argument('--local_iterations', type=int, default=1,
@@ -53,9 +66,10 @@ def args_parser():
                         help="optimizer to use (sgd or adam)")
     parser.add_argument('--momentum', type=float, default=0.5,
                         help="momentum")
-    parser.add_argument('--seed', type=float, default=1234,
+    parser.add_argument('--seed', type=float, default=1234, # 5555 for hetroFL mnist+mlp
                         help="manual seed for reproducibility")
     parser.add_argument('--eval', action='store_true',
                         help="weather to perform inference of training")
+
     args = parser.parse_args()
     return args

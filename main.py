@@ -1,5 +1,6 @@
 import copy
 import gc
+import random
 import sys
 import time
 import torch
@@ -18,7 +19,7 @@ import models
 if __name__ == '__main__':
     start_time = time.time()
     args = args_parser()
-    boardio, textio, best_val_acc, path_best_model = utils.initializations(args)
+    textio, best_val_acc, path_best_model = utils.initializations(args)
     textio.cprint(str(args))
 
     # data
@@ -28,9 +29,15 @@ if __name__ == '__main__':
     # model
     if args.model == 'mlp':
         global_model = models.FC2Layer(input, output)
-    else:
+    elif args.model == 'cnn2':
         global_model = models.CNN2Layer(input, output, args.data)
-    textio.cprint(str(summary(global_model)))
+    elif args.model[:3] == 'VGG':
+        if args.data != 'cifar10':
+            raise AssertionError('for VGG data must be cifar10')
+        global_model = models.VGG(args.model)
+    else:
+        AssertionError('invalid model')
+    textio.cprint(str(summary(global_model, verbose=0)))
     global_model.to(args.device)
 
     train_creterion = torch.nn.CrossEntropyLoss(reduction='mean')
@@ -53,16 +60,18 @@ if __name__ == '__main__':
     # stragglers
     num_of_layers = global_model.state_dict().keys().__len__()
     if args.stragglers is not None:
-        stragglers_idx = randint(low=0, high=args.num_users, size=round(args.stragglers_percent * args.num_users)) # randomly choose the stragglers
+        stragglers_idx = random.sample(range(args.num_users), round(args.stragglers_percent * args.num_users))
     else:
         stragglers_idx = []
 
     for global_epoch in tqdm(range(0, args.global_epochs)):
         utils.distribute_model(local_models, global_model)
         users_loss = []
-
         for user_idx in range(args.num_users):
             if (args.stragglers == 'drop') & (user_idx in stragglers_idx):
+                user_new_state_dict = copy.deepcopy(global_model).state_dict()
+                user_new_state_dict.update({})
+                local_models[user_idx]['model'].load_state_dict(user_new_state_dict)
                 continue
 
             user_loss = []
@@ -77,34 +86,36 @@ if __name__ == '__main__':
                 if args.up_to_layer is not None:
                     up_to_layer = num_of_layers - args.up_to_layer  # last-to-first layers updated
                 else:
-                    up_to_layer = np.random.randint(1, num_of_layers+1)  # random last-to-first layers updated
+                    up_to_layer = np.random.randint(1, num_of_layers + 1)  # random last-to-first layers updated
 
                 user_updated_layers = OrderedDict(islice(reversed(user['model'].state_dict().items()), up_to_layer))
                 user_new_state_dict.update(user_updated_layers)
                 user['model'].load_state_dict(user_new_state_dict)
-
-            users_loss.append(mean(user_loss))
-
-        train_loss = mean(users_loss)
+            try:
+                users_loss.append(mean(user_loss))
+            except:
+                continue
+        try:
+            train_loss = mean(users_loss)
+        except:
+            train_loss = 0
         utils.FedAvg(local_models, global_model)
 
         val_acc = utils.test(val_loader, global_model, test_creterion, args.device)
         train_loss_list.append(train_loss)
         val_acc_list.append(val_acc)
 
-        boardio.add_scalar('train', train_loss, global_epoch)
-        boardio.add_scalar('validation', val_acc, global_epoch)
         gc.collect()
 
         if val_acc > best_val_acc:
             best_val_acc = val_acc
             torch.save(global_model.state_dict(), path_best_model)
 
-        test_acc = utils.test(test_loader, global_model, test_creterion, args.device)
         textio.cprint(f'epoch: {global_epoch} | train_loss: {train_loss:.2f} | val_acc: {val_acc:.0f}%')
 
     np.save(f'checkpoints/{args.exp_name}/train_loss_list.npy', train_loss_list)
     np.save(f'checkpoints/{args.exp_name}/val_acc_list.npy', val_acc_list)
+
 
     elapsed_min = (time.time() - start_time) / 60
     textio.cprint(f'total execution time: {elapsed_min:.0f} min')
