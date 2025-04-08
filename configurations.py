@@ -1,3 +1,4 @@
+
 import argparse
 
 def none_or_str(value):
@@ -35,13 +36,13 @@ def args_parser():
                         choices=['mnist', 'cifar10'],
                         help="dataset to use (mnist or cifar)")
     parser.add_argument('--model', type=str, default='cnn2',
-                        choices=['mlp', 'cnn2', 'VGG11', 'VGG13', 'VGG16', 'VGG19'],
+                        choices=['mlp', 'cnn2', 'VGG11', 'VGG13', 'VGG16', 'VGG19', 'LeNet', 'AlexNet', 'ResNet'],
                         help="model arcitecture to be used")
-    parser.add_argument('--lr', type=float, default=0.1,
+    parser.add_argument('--lr', type=float, default=0.01,
                         help="learning rate")
     parser.add_argument('--global_epochs', type=int, default=100,
                         help="number of global epochs")
-    parser.add_argument('--device', type=str, default='cuda:0',
+    parser.add_argument('--device', type=str, default='cpu',
                         choices=['cuda:0', 'cuda:1', 'cpu'],
                         help="device to use (gpu or cpu)")
 
@@ -49,9 +50,11 @@ def args_parser():
                         help="number of samples per user; if 'None' - uniformly distribute all data among all users)")
     parser.add_argument('--num_users', type=int, default=30,
                         help="number of users participating in the federated learning")
+    parser.add_argument('--dir_alpha', type=float, default=0,
+                        help="Dirichilet alpha")
     parser.add_argument('--train_batch_size', type=int, default=16,
                         help="trainset batch size")
-    parser.add_argument('--local_iterations', type=int, default=1,
+    parser.add_argument('--local_iterations', type=int, default=5,
                         help="number of local iterations instead of local epoch")
     parser.add_argument('--norm_mean', type=float, default=0.5,
                         help="normalize the data to norm_mean")
@@ -59,14 +62,14 @@ def args_parser():
                         help="normalize the data to norm_std")
     parser.add_argument('--test_batch_size', type=int, default=1000,
                         help="testset batch size")
-    parser.add_argument('--local_epochs', type=int, default=1,
+    parser.add_argument('--local_epochs', type=int, default=2,
                         help="number of local epochs")
     parser.add_argument('--optimizer', type=str, default='sgd',
                         choices=['sgd', 'adam'],
                         help="optimizer to use (sgd or adam)")
     parser.add_argument('--momentum', type=float, default=0.5,
                         help="momentum")
-    parser.add_argument('--seed', type=float, default=1234, # 5555 for hetroFL mnist+mlp
+    parser.add_argument('--seed', type=int, default= 1234, # 5555 for hetroFL mnist+mlp 1234
                         help="manual seed for reproducibility")
     parser.add_argument('--eval', action='store_true',
                         help="weather to perform inference of training")
