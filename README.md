@@ -27,7 +27,7 @@ python main.py --exp_name=salf --eval
 
 # S3N-FL: Straggler-Staleness Solver with Semi Strategies for Non-IID Data in FL
 
-![S3N-FL Architecture](./image.png)
+![S3N-FL Architecture](./Picture1.png)
 
 ## 🔍 Overview
 
