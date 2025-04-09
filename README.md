@@ -1,9 +1,12 @@
 # Straggler-Aware Layer-Wise Low-Latency Federated Learning
-![image](https://github.com/langnatalie/SALF/assets/55830582/d706885a-e0a9-47bd-895f-a1be0c8f3213)
-
+ 
 ## Introduction
-In this work we propose _Straggler-Aware Layer-Wise Low-Latency Federated Learning (SALF)_, that leverages the optimization procedure of neural networks via backpropagation to update the global model in a _layer-wise_ fashion. This repository contains a basic PyTorch implementation of SALF. Please refer to our [paper](https://arxiv.org/abs/2403.18375) for more details.
+In this work they propose _Straggler-Aware Layer-Wise Low-Latency Federated Learning (SALF)_, that leverages the optimization procedure of neural networks via backpropagation to update the global model in a _layer-wise_ fashion. This repository contains a basic PyTorch implementation of SALF. Please refer to our [paper](https://arxiv.org/abs/2403.18375) for more details.
 
+## Introduction of S3N-FL
+In addition to the original work, we have extended the SALF framework and introduced S3N-FL (Straggler-Staleness Solver with Semi Strategies for Non-IID Data in FL). This enhancement is designed to handle Non-IID data distributions more effectively. We conducted extensive experiments using Dirichlet distributions with concentration parameters of 0.001, 0.01, and 0.05 to simulate varying levels of data heterogeneity across clients.
+
+These experiments validate the robustness of S3N-FL in highly skewed and realistic federated learning scenarios, demonstrating its ability to maintain strong performance under extreme Non-IID conditions while addressing both straggler and staleness challenges.
 ## Usage
 This code has been tested on Python 3.7.3, PyTorch 1.8.0 and CUDA 11.1.
 
