@@ -1,9 +1,9 @@
-# S3N-FL: Straggler-Staleness Solver with Semi-Strategies for Non-IID Data in FL
+# S3N-FL: A Straggler and Staleness Solver with Semi-Strategies for Non-IID Data in Federated Learning
 ## Introduction of S3N-FL
 
   In the original work, the authors proposed Straggler-Aware Layer-Wise Low-Latency Federated Learning (SALF), which leverages the optimization procedure of neural networks via backpropagation to update the global model in a layer-wise fashion. This approach aims to mitigate the impact of stragglers and reduce latency in federated learning systems. The official implementation of SALF is available in this repository. For more details, please refer to their [paper](https://arxiv.org/abs/2403.18375) for more details.
 
-Building upon this foundation, we extend the SALF framework with our proposed method, S3N-FL (Straggler-Staleness Solver with Semi Strategies for Non-IID Data in FL). Our extension is designed to address straggler and staleness challenges while handling extreme Non-IID data distributions. Through extensive experimentation using Dirichlet distributions (α = 0.001, 0.01, 0.05), we demonstrate that S3N-FL performs robustly in heterogeneous and realistic federated learning settings.
+Building upon this foundation, we extend the SALF framework with our proposed method, S3N-FL (A Straggler and Staleness Solver with Semi-Strategies for Non-IID Data in Federated Learning). Our extension is designed to address straggler and staleness challenges while handling extreme Non-IID data distributions. Through extensive experimentation using Dirichlet distributions (α = 0.001, 0.01, 0.05), we demonstrate that S3N-FL performs robustly in heterogeneous and realistic federated learning settings.
  
 This code has been tested on Python 3.7.3, PyTorch 1.8.0 and CUDA 11.1.
 
