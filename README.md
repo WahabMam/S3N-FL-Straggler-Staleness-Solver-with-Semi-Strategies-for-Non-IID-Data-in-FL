@@ -1,13 +1,11 @@
 # Straggler-Aware Layer-Wise Low-Latency Federated Learning
  
-## Introduction
-In this work they propose _Straggler-Aware Layer-Wise Low-Latency Federated Learning (SALF)_, that leverages the optimization procedure of neural networks via backpropagation to update the global model in a _layer-wise_ fashion. This repository contains a basic PyTorch implementation of SALF. Please refer to our [paper](https://arxiv.org/abs/2403.18375) for more details.
-
 ## Introduction of S3N-FL
-In addition to the original work, we have extended the SALF framework and introduced S3N-FL (Straggler-Staleness Solver with Semi Strategies for Non-IID Data in FL). This enhancement is designed to handle Non-IID data distributions more effectively. We conducted extensive experiments using Dirichlet distributions with concentration parameters of 0.001, 0.01, and 0.05 to simulate varying levels of data heterogeneity across clients.
 
-These experiments validate the robustness of S3N-FL in highly skewed and realistic federated learning scenarios, demonstrating its ability to maintain strong performance under extreme Non-IID conditions while addressing both straggler and staleness challenges.
-## Usage
+  In the original work, the authors proposed Straggler-Aware Layer-Wise Low-Latency Federated Learning (SALF), which leverages the optimization procedure of neural networks via backpropagation to update the global model in a layer-wise fashion. This approach aims to mitigate the impact of stragglers and reduce latency in federated learning systems. The official implementation of SALF is available in this repository. For more details, please refer to their [paper](https://arxiv.org/abs/2403.18375) for more details.
+
+Building upon this foundation, we extend the SALF framework with our proposed method, S3N-FL (Straggler-Staleness Solver with Semi Strategies for Non-IID Data in FL). Our extension is designed to address straggler and staleness challenges while handling extreme Non-IID data distributions. Through extensive experimentation using Dirichlet distributions (α = 0.001, 0.01, 0.05), we demonstrate that S3N-FL performs robustly in heterogeneous and realistic federated learning settings.
+ 
 This code has been tested on Python 3.7.3, PyTorch 1.8.0 and CUDA 11.1.
 
 ### Prerequisite
