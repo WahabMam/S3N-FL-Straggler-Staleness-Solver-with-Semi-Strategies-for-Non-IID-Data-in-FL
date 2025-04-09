@@ -1,4 +1,4 @@
-# S3N-FL: Straggler-Staleness-Solver with-Semi Strategies for Non IID Data in FL
+# S3N-FL: Straggler-Staleness Solver with Semi-Strategies for Non-IID Data in FL
 ## Introduction of S3N-FL
 
   In the original work, the authors proposed Straggler-Aware Layer-Wise Low-Latency Federated Learning (SALF), which leverages the optimization procedure of neural networks via backpropagation to update the global model in a layer-wise fashion. This approach aims to mitigate the impact of stragglers and reduce latency in federated learning systems. The official implementation of SALF is available in this repository. For more details, please refer to their [paper](https://arxiv.org/abs/2403.18375) for more details.
